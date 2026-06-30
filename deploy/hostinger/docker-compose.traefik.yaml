@@ -19,12 +19,13 @@
 
 services:
   traefik:
-    image: traefik:v3.1
+    image: traefik:v3.6
     container_name: traefik
     restart: unless-stopped
     command:
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=${TRAEFIK_NETWORK:-traefik-proxy}
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
       # Global HTTP->HTTPS redirect (the ACME HTTP-01 challenge is still served
