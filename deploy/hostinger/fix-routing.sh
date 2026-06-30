@@ -15,8 +15,12 @@ if ! grep -q 'providers.docker.network' docker-compose.traefik.yaml; then
   sed -i '/providers.docker.exposedbydefault=false/a\      - --providers.docker.network=traefik-proxy' docker-compose.traefik.yaml
 fi
 
-echo "==> Fix ACME email (invalid @sslip.io emails can break cert issuance)..."
-sed -i 's|^ACME_EMAIL=.*|ACME_EMAIL=admin@example.com|' .env
+echo "==> Fix ACME email (must be a real address — Let's Encrypt rejects @example.com)..."
+if grep -q '@example.com' .env 2>/dev/null; then
+  echo "WARNING: .env still has ACME_EMAIL=@example.com — set a real email first:"
+  echo "  sed -i 's|^ACME_EMAIL=.*|ACME_EMAIL=you@gmail.com|' .env"
+  exit 1
+fi
 
 echo "==> Restart Traefik..."
 docker compose -f docker-compose.traefik.yaml --env-file .env up -d --force-recreate

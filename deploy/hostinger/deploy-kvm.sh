@@ -17,10 +17,16 @@ INSTALL_DIR="${INSTALL_DIR:-/opt/BSX_VOICE}"
 SERVER_IP="${SERVER_IP:-$(curl -fsS --max-time 5 ifconfig.me 2>/dev/null || hostname -I | awk '{print $1}')}"
 PUBLIC_HOST="${PUBLIC_HOST:-${SERVER_IP}.sslip.io}"
 TURN_HOST="${TURN_HOST:-$SERVER_IP}"
-ACME_EMAIL="${ACME_EMAIL:-admin@example.com}"
+ACME_EMAIL="${ACME_EMAIL:-}"
 
 if [[ $EUID -ne 0 ]]; then
   echo "Run as root: sudo bash $0"
+  exit 1
+fi
+
+if [[ -z "$ACME_EMAIL" ]]; then
+  echo "ERROR: Set ACME_EMAIL to a real address for Let's Encrypt (not @example.com)."
+  echo "Example: ACME_EMAIL=you@gmail.com bash deploy-kvm.sh"
   exit 1
 fi
 
