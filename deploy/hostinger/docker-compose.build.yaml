@@ -1,0 +1,9 @@
+# Build the custom BSX VOICE UI from this repo instead of pulling dograhai/dograh-ui.
+# Usage:
+#   docker compose -f docker-compose.yaml -f docker-compose.build.yaml --env-file .env up -d --build
+services:
+  ui:
+    build:
+      context: ../..
+      dockerfile: ui/Dockerfile
+    image: bsx-voice-ui:local

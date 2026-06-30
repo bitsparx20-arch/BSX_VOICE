@@ -43,6 +43,33 @@ The platform provides Traefik, so you only deploy the app stack:
 2. Import / deploy `docker-compose.yaml`.
 3. Ensure the coturn UDP/TCP ports above are open in the firewall.
 
+## Deploy on a plain KVM / VPS (no managed Traefik)
+
+For a raw VPS (e.g. Hostinger KVM with SSH only), use the automated script:
+
+```bash
+ssh root@YOUR_SERVER_IP
+curl -fsSL https://raw.githubusercontent.com/bitsparx20-arch/BSX_VOICE/main/deploy/hostinger/deploy-kvm.sh | bash
+```
+
+Or clone and run locally:
+
+```bash
+git clone --recurse-submodules https://github.com/bitsparx20-arch/BSX_VOICE.git /opt/BSX_VOICE
+cd /opt/BSX_VOICE/deploy/hostinger
+sudo bash deploy-kvm.sh
+```
+
+The script installs Docker, starts Traefik with Let's Encrypt, builds your **custom BSX VOICE UI** from source, and pulls the API image. Without a domain, it uses `YOUR_IP.sslip.io` (free HTTPS).
+
+Optional overrides:
+
+```bash
+PUBLIC_HOST=voice.yourdomain.com TURN_HOST=YOUR_SERVER_IP sudo bash deploy-kvm.sh
+```
+
+Required open ports: **80**, **443** (TCP), **3478** and **5349** (TCP+UDP), **49152-49200** (UDP).
+
 ## Test on a generic VPS (self-managed stand-in Traefik)
 
 On a box that does **not** already run Traefik:
